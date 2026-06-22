@@ -1,0 +1,42 @@
+<article class="post-card">
+
+  <header class="post-header">
+    <div class="post-author">
+      <div class="avatar-circle">
+        @if (post().authorAvatarUrl) {
+          <img [src]="post().authorAvatarUrl" [alt]="post().authorName" />
+        } @else {
+          <span>{{ post().authorName.charAt(0) }}</span>
+        }
+      </div>
+      <div class="author-info">
+        <span class="author-name">{{ post().authorName }}</span>
+        <span class="post-date">{{ post().createdAt }}</span>
+      </div>
+    </div>
+    <button type="button" class="more-btn" aria-label="Más opciones">⋯</button>
+  </header>
+
+  <p class="post-content">{{ post().content }}</p>
+
+  @if (post().imageUrl) {
+    <div class="post-image-wrapper">
+      <img [src]="post().imageUrl" [alt]="'Imagen de la publicación de ' + post().authorName" class="post-image" />
+    </div>
+  }
+
+  <footer class="post-actions">
+    <button type="button" class="action-btn" [class.liked]="post().likedByMe" (click)="onLikeClick()">
+      <span>{{ post().likedByMe ? '❤️' : '🤍' }}</span>
+      <span>{{ post().likesCount }}</span>
+    </button>
+    <button type="button" class="action-btn">
+      <span>💬</span>
+      <span>{{ post().commentsCount }}</span>
+    </button>
+    <button type="button" class="action-btn">
+      <span>↗️</span>
+    </button>
+  </footer>
+
+</article>

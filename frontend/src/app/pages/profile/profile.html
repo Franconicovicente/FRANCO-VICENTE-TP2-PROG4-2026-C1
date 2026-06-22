@@ -1,1 +1,95 @@
-<p>profile works!</p>
+<div class="profile-page">
+
+  <!-- Header del perfil -->
+  <div class="profile-header">
+
+    <div class="avatar-wrapper">
+      <div class="profile-avatar">
+        @if (profile().avatarUrl) {
+          <img [src]="profile().avatarUrl" [alt]="profile().username" />
+        } @else {
+          <span>{{ profile().username.charAt(0) }}</span>
+        }
+      </div>
+      <button type="button" class="avatar-edit-btn" (click)="onChangeAvatar()" aria-label="Cambiar foto de perfil">
+        📷
+      </button>
+    </div>
+
+    <div class="profile-info">
+      <div class="profile-title-row">
+        <h1>{{ profile().username }}</h1>
+        <button type="button" class="btn-edit-profile" (click)="onEditProfile()">Editar perfil</button>
+        <button type="button" class="btn-settings" (click)="onSettings()" aria-label="Configuración">⚙️</button>
+      </div>
+
+      <div class="profile-stats">
+        <div class="stat">
+          <span class="stat-number">{{ profile().postsCount }}</span>
+          <span class="stat-label">Publicaciones</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">{{ profile().followersCount }}</span>
+          <span class="stat-label">Seguidores</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">{{ profile().followingCount }}</span>
+          <span class="stat-label">Seguidos</span>
+        </div>
+      </div>
+
+      @if (profile().bio) {
+        <p class="profile-bio">{{ profile().bio }}</p>
+      }
+    </div>
+
+  </div>
+
+  <!-- Tabs -->
+  <div class="profile-tabs">
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab() === 'posts'"
+      (click)="setTab('posts')"
+    >
+      <span class="tab-icon">▦</span> POSTS
+    </button>
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab() === 'saved'"
+      (click)="setTab('saved')"
+    >
+      <span class="tab-icon">🔖</span> GUARDADOS
+    </button>
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab() === 'tagged'"
+      (click)="setTab('tagged')"
+    >
+      <span class="tab-icon">@</span> ETIQUETADO
+    </button>
+  </div>
+
+  <!-- Contenido según tab activa -->
+  @if (activeTab() === 'posts') {
+    <div class="posts-list">
+      @for (post of myPosts(); track post.id) {
+        <app-post-card [post]="post" (likeToggled)="onLikeToggled($event)" />
+      } @empty {
+        <p class="empty-state">Todavía no publicaste nada.</p>
+      }
+    </div>
+  }
+
+  @if (activeTab() === 'saved') {
+    <p class="empty-state">No tenés publicaciones guardadas.</p>
+  }
+
+  @if (activeTab() === 'tagged') {
+    <p class="empty-state">No hay publicaciones en las que te etiquetaron.</p>
+  }
+
+</div>

@@ -32,6 +32,14 @@
   box-shadow: 0 4px 12px var(--color-primary-soft);
 }
 
+.brand .brand-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+
 .brand h1 {
   font-size: 28px;
   font-weight: 700;

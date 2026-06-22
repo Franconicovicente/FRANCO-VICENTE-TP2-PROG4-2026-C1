@@ -1,1 +1,41 @@
-<p>feed works!</p>
+<div class="feed-page">
+
+  <!-- Caja para crear nueva publicación -->
+  <div class="create-post-card">
+    <div class="create-post-row">
+      <div class="avatar-circle">
+        @if (authService.currentUser()?.avatarUrl) {
+          <img [src]="authService.currentUser()?.avatarUrl" alt="Tu avatar" />
+        } @else {
+          <span>{{ (authService.currentUser()?.username ?? 'A').charAt(0) }}</span>
+        }
+      </div>
+      <textarea
+        class="create-post-input"
+        placeholder="¿Qué tienes en mente?"
+        [value]="newPostContent()"
+        (input)="onContentInput($event)"
+        rows="1"
+      ></textarea>
+    </div>
+
+    <div class="create-post-actions">
+      <button type="button" class="attach-image-btn" (click)="onImageClick()">
+        <span class="attach-icon">🖼️</span> Imagen
+      </button>
+      <button type="button" class="publish-btn" (click)="onPublish()">
+        Publicar
+      </button>
+    </div>
+  </div>
+
+  <!-- Listado del feed -->
+  <div class="posts-list">
+    @for (post of posts(); track post.id) {
+      <app-post-card [post]="post" (likeToggled)="onLikeToggled($event)" />
+    } @empty {
+      <p class="empty-state">Todavía no hay publicaciones. ¡Sé el primero en publicar algo!</p>
+    }
+  </div>
+
+</div>
