@@ -1,0 +1,10 @@
+# Ignorar dependencias de Node en cualquier subcarpeta
+**/node_modules/
+**/dist/
+**/.angular/
+
+# Archivos de configuración local de VS Code
+.vscode/
+
+# Archivos de entorno (Credenciales de Mongo y Cloudinary)
+**/.env
