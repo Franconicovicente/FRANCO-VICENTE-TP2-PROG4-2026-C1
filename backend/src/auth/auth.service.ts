@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
 import { User } from './schemas/user.schema';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -64,13 +65,6 @@ export class AuthService {
     if (!usuario) {
       throw new UnauthorizedException('Credenciales incorrectas');
     }
-
-    // Validar contraseña sin encriptar contra la encriptada de la BD
-    const passwordValido = await bcrypt.compare(password, usuario.password);
-    if (!passwordValido) {
-      throw new UnauthorizedException('Credenciales incorrectas');
-    }
-
     // Devolver todos los datos del usuario 
     // Ocultamos la contraseña 
     // conversion documento de Mongoose a un objeto JS común
@@ -79,6 +73,28 @@ export class AuthService {
     // separar password y guardar todo el resto en 'usuarioSinPassword'
     const { password: _, ...usuarioSinPassword } = usuarioJson;
 
-    return usuarioSinPassword;
+    // 🔑 CREAMOS EL JWT SEGÚN LAS PAUTAS OBLIGATORIAS
+    const token = jwt.sign(
+      { 
+        uuid: usuario._id,               // uuid exigido
+        correo: usuario.correo,           // correo exigido
+        username: usuario.username,       // nombre de usuario exigido
+        rol: usuario.rol                  // rol exigido
+      },
+      process.env.JWT_SECRET || 'claveSecretaSuperSecreta',
+      { expiresIn: '15m' } // ⏱️ Vencimiento : 15 minutos
+    );
+
+    // Validar contraseña sin encriptar contra la encriptada de la BD
+    const passwordValido = await bcrypt.compare(password, usuario.password);
+    if (!passwordValido) {
+      throw new UnauthorizedException('Credenciales incorrectas');
+    }
+
+
+    return {
+      user: usuarioSinPassword,
+      token: token
+    }
   }
 }

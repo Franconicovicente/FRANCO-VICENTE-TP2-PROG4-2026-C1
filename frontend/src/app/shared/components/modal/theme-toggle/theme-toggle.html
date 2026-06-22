@@ -1,0 +1,12 @@
+<button
+  type="button"
+  class="theme-toggle"
+  (click)="themeService.toggle()"
+  [attr.aria-label]="themeService.theme() === 'light' ? 'Activar tema oscuro' : 'Activar tema claro'"
+>
+  @if (themeService.theme() === 'light') {
+    <span>🌙</span>
+  } @else {
+    <span>☀️</span>
+  }
+</button>

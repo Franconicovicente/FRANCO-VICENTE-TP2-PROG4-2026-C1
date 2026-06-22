@@ -1,0 +1,142 @@
+<div class="register-page">
+
+  <app-theme-toggle class="theme-toggle-fixed" />
+
+  <div class="brand">
+    <div class="brand-icon">
+        <img src="assets/gato.png" alt="Logo de la app" class="brand-logo" />
+    </div>
+    <h1>Crear cuenta</h1>
+    <p class="subtitle">Bienvenido!</p>
+  </div>
+
+  <div class="form-card">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+      <!-- Nombre de usuario -->
+      <div class="field-group">
+        <label for="username">Nombre de usuario</label>
+        <div class="input-wrapper" [class.invalid]="username?.invalid && username?.touched">
+          <span class="icon">👤</span>
+          <input
+            id="username"
+            type="text"
+            formControlName="username"
+            placeholder="ej. marcos_perez"
+            autocomplete="username"
+          />
+        </div>
+        @if (username?.invalid && username?.touched) {
+          <small class="error-text">
+            @if (username?.errors?.['required']) {
+              <span>El nombre de usuario es obligatorio.</span>
+            }
+            @if (username?.errors?.['minlength']) {
+              <span>Debe tener al menos 3 caracteres.</span>
+            }
+          </small>
+        }
+      </div>
+
+      <!-- Email -->
+      <div class="field-group">
+        <label for="email">Email</label>
+        <div class="input-wrapper" [class.invalid]="email?.invalid && email?.touched">
+          <span class="icon">✉️</span>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="usuario@ejemplo.com"
+            autocomplete="email"
+          />
+        </div>
+        @if (email?.invalid && email?.touched) {
+          <small class="error-text">
+            @if (email?.errors?.['required']) {
+              <span>El email es obligatorio.</span>
+            }
+            @if (email?.errors?.['email']) {
+              <span>⚠ Email inválido.</span>
+            }
+          </small>
+        }
+      </div>
+
+      <!-- Contraseña -->
+      <div class="field-group">
+        <label for="password">Contraseña</label>
+        <div class="input-wrapper" [class.invalid]="password?.invalid && password?.touched">
+          <span class="icon">🔒</span>
+          <input
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="••••••••"
+            autocomplete="new-password"
+          />
+          <span class="icon-button" (click)="togglePassword()">{{ showPassword ? '🙈' : '👁️' }}</span>
+        </div>
+        @if (password?.invalid && password?.touched) {
+          <small class="error-text">
+            @if (password?.errors?.['required']) {
+              <span>La contraseña es obligatoria.</span>
+            }
+            @if (password?.errors?.['minlength']) {
+              <span>Debe tener al menos 6 caracteres.</span>
+            }
+          </small>
+        }
+      </div>
+
+      <!-- Confirmar contraseña -->
+      <div class="field-group">
+        <label for="confirmPassword">Confirmar contraseña</label>
+        <div class="input-wrapper" [class.invalid]="confirmPassword?.invalid && confirmPassword?.touched">
+          <span class="icon">🔓</span>
+          <input
+            id="confirmPassword"
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            formControlName="confirmPassword"
+            placeholder="••••••••"
+            autocomplete="new-password"
+          />
+          <span class="icon-button" (click)="toggleConfirmPassword()">{{ showConfirmPassword ? '🙈' : '👁️' }}</span>
+        </div>
+        @if (confirmPassword?.invalid && confirmPassword?.touched) {
+          <small class="error-text">
+            @if (confirmPassword?.errors?.['required']) {
+              <span>Confirmá tu contraseña.</span>
+            }
+            @if (confirmPassword?.errors?.['mismatch']) {
+              <span>Las contraseñas no coinciden.</span>
+            }
+          </small>
+        }
+      </div>
+
+      <button type="submit" class="btn-submit" [disabled]="loading">
+        {{ loading ? 'Creando cuenta...' : 'Registrarse' }}
+      </button>
+
+      <div class="divider">
+        <span>O continuar con</span>
+      </div>
+
+      <div class="social-buttons">
+        <button type="button" class="btn-social" (click)="loginWithProvider('google')">
+          <span class="g-icon">G</span> Google
+        </button>
+        <button type="button" class="btn-social" (click)="loginWithProvider('facebook')">
+          <span class="f-icon">f</span> Facebook
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+  <p class="footer-text">
+    ¿Ya tenés cuenta? <a routerLink="/login">Iniciá sesión</a>
+  </p>
+
+</div>

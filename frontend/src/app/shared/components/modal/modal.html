@@ -1,0 +1,32 @@
+@if (modalService.activeModal(); as modal) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal-box" [ngClass]="modal.type" (click)="$event.stopPropagation()">
+
+      <div class="modal-icon" [ngClass]="modal.type">
+        @switch (modal.type) {
+          @case ('success') { <span>✓</span> }
+          @case ('error') { <span>!</span> }
+          @case ('info') { <span>i</span> }
+          @case ('confirm') { <span>?</span> }
+        }
+      </div>
+
+      <h2 class="modal-title">{{ modal.title }}</h2>
+      <p class="modal-message">{{ modal.message }}</p>
+
+      <div class="modal-actions">
+        @if (modal.type === 'confirm') {
+          <button class="btn-secondary" (click)="close()">
+            {{ modal.cancelText || 'Cancelar' }}
+          </button>
+          <button class="btn-primary" (click)="confirm()">
+            {{ modal.confirmText || 'Confirmar' }}
+          </button>
+        } @else {
+          <button class="btn-primary" (click)="close()">Entendido</button>
+        }
+      </div>
+
+    </div>
+  </div>
+}

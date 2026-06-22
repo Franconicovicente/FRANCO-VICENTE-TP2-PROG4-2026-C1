@@ -1,0 +1,90 @@
+<div class="login-page">
+
+  <app-theme-toggle class="theme-toggle-fixed" />
+
+  <div class="brand">
+    <div class="brand-icon">
+      <img src="assets/gato.png" alt="Logo de la app" class="brand-logo" />
+    </div>
+    <h1>Nobu</h1>
+    <p class="subtitle">Conectando con intención y calma.</p>
+  </div>
+
+  <div class="form-card">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+      <!-- Correo o nombre de usuario -->
+      <div class="field-group">
+        <label for="loginField">Correo o nombre de usuario</label>
+        <div class="input-wrapper" [class.invalid]="loginField?.invalid && loginField?.touched">
+          <span class="icon">✉️</span>
+          <input
+            id="loginField"
+            type="text"
+            formControlName="loginField"
+            placeholder="ejemplo@correo.com o marcos_perez"
+            autocomplete="username"
+          />
+        </div>
+        @if (loginField?.invalid && loginField?.touched) {
+          <small class="error-text">
+            @if (loginField?.errors?.['required']) {
+              <span>Ingresá tu correo o nombre de usuario.</span>
+            }
+          </small>
+        }
+      </div>
+
+      <!-- Contraseña -->
+      <div class="field-group">
+        <div class="label-row">
+          <label for="password">Contraseña</label>
+          <a class="forgot-link" (click)="onForgotPassword()">Olvidé mi contraseña</a>
+        </div>
+        <div class="input-wrapper" [class.invalid]="password?.invalid && password?.touched">
+          <span class="icon">🔒</span>
+          <input
+            id="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="••••••••"
+            autocomplete="current-password"
+          />
+          <span class="icon-button" (click)="togglePassword()">{{ showPassword() ? '🙈' : '👁️' }}</span>
+        </div>
+        @if (password?.invalid && password?.touched) {
+          <small class="error-text">
+            @if (password?.errors?.['required']) {
+              <span>La contraseña es obligatoria.</span>
+            }
+          </small>
+        }
+      </div>
+
+      <!-- Recordar sesión -->
+      <label class="remember-row">
+        <input type="checkbox" [checked]="rememberMe()" (change)="toggleRememberMe()" />
+        <span>Recordar mi sesión</span>
+      </label>
+
+      <button type="submit" class="btn-submit" [disabled]="loading()">
+        {{ loading() ? 'Iniciando sesión...' : 'Iniciar sesión' }}
+        @if (!loading()) {
+          <span class="arrow">→</span>
+        }
+      </button>
+
+    </form>
+  </div>
+
+  <p class="footer-text">
+    ¿No tenés cuenta? <a routerLink="/register">Registrate</a>
+  </p>
+
+  <div class="footer-links">
+    <a (click)="modalService.showInfo('Privacidad', 'La política de privacidad estará disponible próximamente.')">Privacidad</a>
+    <a (click)="modalService.showInfo('Términos', 'Los términos y condiciones estarán disponibles próximamente.')">Términos</a>
+    <a (click)="modalService.showInfo('Soporte', 'Para soporte, contactate con el equipo de la app.')">Soporte</a>
+  </div>
+
+</div>
