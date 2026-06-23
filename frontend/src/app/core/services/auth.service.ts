@@ -7,7 +7,7 @@ import { User } from '../models/user.model';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/auth'; // Ajustar puerto/ruta según tu back
+  private apiUrl = 'https://franco-vicente-tp2-prog4-2026-c1.onrender.com/auth'; // Ajustar puerto/ruta según tu back
 
   // Señal con el usuario actual (null = no logueado)
   currentUser = signal<User | null>(this.getStoredUser());
