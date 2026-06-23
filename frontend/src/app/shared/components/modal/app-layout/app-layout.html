@@ -2,15 +2,15 @@
 
   <!-- Navbar superior -->
   <header class="topbar">
-    <span class="brand-name">Nobu</span>
+    <span class="brand-name">Serene Social</span>
     <div class="topbar-right">
       <app-theme-toggle />
       <button type="button" class="icon-btn" aria-label="Notificaciones">🔔</button>
       <div class="topbar-avatar">
-        @if (authService.currentUser()?.avatarUrl) {
-          <img [src]="authService.currentUser()?.avatarUrl" alt="Avatar" />
+        @if (authService.currentUser()?.fotoUrl) {
+          <img [src]="authService.currentUser()?.fotoUrl" alt="Avatar" />
         } @else {
-          <span>{{ (authService.currentUser()?.username ?? '?').charAt(0) }}</span>
+          <span>{{ (authService.currentUser()?.nombre ?? '?').charAt(0) }}</span>
         }
       </div>
     </div>
@@ -21,8 +21,8 @@
     <!-- Sidebar lateral -->
     <aside class="sidebar">
       <div class="sidebar-brand">
-        <span class="sidebar-title">Nobu</span>
-        <span class="sidebar-subtitle">Tu red social</span>
+        <span class="sidebar-title">Serene Social</span>
+        <span class="sidebar-subtitle">Interacciones Curadas</span>
       </div>
 
       <nav class="sidebar-nav">
@@ -32,7 +32,7 @@
         </a>
         <a routerLink="/profile" routerLinkActive="active" class="nav-link">
           <span class="nav-icon">👤</span>
-          <span>Perfil</span>
+          <span>Profile</span>
         </a>
       </nav>
 

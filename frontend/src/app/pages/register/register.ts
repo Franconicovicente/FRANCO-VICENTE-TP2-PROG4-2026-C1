@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
@@ -18,25 +18,24 @@ export class RegisterComponent {
   private modalService = inject(ModalService);
   private router = inject(Router);
 
-  showPassword = false;
-  showConfirmPassword = false;
-  loading = false;
-  fotoArchivo: File | null = null; // 📸 Guardará el archivo de imagen real
+  showPassword = signal(false);
+  showConfirmPassword = signal(false);
+  loading = signal(false);
 
-  // Expresión regular: Mínimo 8 caracteres, al menos una mayúscula y un número
-  private passwordPattern = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+  // Foto de perfil seleccionada (opcional) + su preview para mostrar en pantalla
+  selectedFile = signal<File | null>(null);
+  previewUrl = signal<string | null>(null);
 
   registerForm = this.fb.group(
     {
-      nombre: ['', [Validators.required]],
-      apellido: ['', [Validators.required]],
-      correo: ['', [Validators.required, Validators.email]],
+      nombre: ['', [Validators.required, Validators.minLength(2)]],
+      apellido: ['', [Validators.required, Validators.minLength(2)]],
       username: ['', [Validators.required, Validators.minLength(3)]],
-      password: ['', [Validators.required, Validators.pattern(this.passwordPattern)]],
-      confirmPassword: ['', [Validators.required]],
+      correo: ['', [Validators.required, Validators.email]],
       fechaNacimiento: ['', [Validators.required]],
-      descripcion: ['', [Validators.required, Validators.maxLength(200)]],
-      foto: [null, [Validators.required]] // Campo obligatorio para la foto de perfil
+      descripcion: [''],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', [Validators.required]],
     },
     { validators: this.passwordsMatchValidator }
   );
@@ -51,27 +50,48 @@ export class RegisterComponent {
     return null;
   }
 
-  // 📸 Captura la imagen cuando el usuario la selecciona en el HTML
-  onFileChange(event: any): void {
-    if (event.target.files && event.target.files.length > 0) {
-      this.fotoArchivo = event.target.files[0];
-      this.registerForm.patchValue({ foto: event.target.files[0] });
-    }
+  togglePassword(): void {
+    this.showPassword.update((value) => !value);
   }
 
-  togglePassword(): void { this.showPassword = !this.showPassword; }
-  toggleConfirmPassword(): void { this.showConfirmPassword = !this.showConfirmPassword; }
+  toggleConfirmPassword(): void {
+    this.showConfirmPassword.update((value) => !value);
+  }
 
-  // Getters para usar fácil en el HTML
   get nombre() { return this.registerForm.get('nombre'); }
   get apellido() { return this.registerForm.get('apellido'); }
-  get correo() { return this.registerForm.get('correo'); }
   get username() { return this.registerForm.get('username'); }
+  get correo() { return this.registerForm.get('correo'); }
+  get fechaNacimiento() { return this.registerForm.get('fechaNacimiento'); }
   get password() { return this.registerForm.get('password'); }
   get confirmPassword() { return this.registerForm.get('confirmPassword'); }
-  get fechaNacimiento() { return this.registerForm.get('fechaNacimiento'); }
-  get descripcion() { return this.registerForm.get('descripcion'); }
-  get foto() { return this.registerForm.get('foto'); }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      this.modalService.showError(
+        'Formato no permitido',
+        'La foto de perfil debe ser JPG, PNG o WEBP.'
+      );
+      return;
+    }
+
+    this.selectedFile.set(file);
+    const reader = new FileReader();
+    reader.onload = () => this.previewUrl.set(reader.result as string);
+    reader.readAsDataURL(file);
+  }
+
+  removeFile(): void {
+    this.selectedFile.set(null);
+    this.previewUrl.set(null);
+  }
 
   onSubmit(): void {
     if (this.registerForm.invalid) {
@@ -79,34 +99,31 @@ export class RegisterComponent {
       return;
     }
 
-    this.loading = true;
+    this.loading.set(true);
+    const { nombre, apellido, username, correo, fechaNacimiento, descripcion, password } = this.registerForm.value;
 
-    // 📁 Empaquetamos todo en un FormData porque incluye archivo binario
-    const formData = new FormData();
-    const formValues = this.registerForm.value;
-
-    Object.keys(formValues).forEach(key => {
-      const valor = formValues[key as keyof typeof formValues];
-      if (key !== 'foto' && key !== 'confirmPassword' && valor !== null && valor !== undefined) {
-        formData.append(key, valor.toString());
-      }
-    });
-
-    if (this.fotoArchivo) {
-      formData.append('foto', this.fotoArchivo);
-    }
-
-    this.authService.register(formData).subscribe({
+    this.authService.register(
+      {
+        nombre: nombre!,
+        apellido: apellido!,
+        username: username!,
+        correo: correo!,
+        fechaNacimiento: fechaNacimiento!,
+        descripcion: descripcion || undefined,
+        password: password!,
+      },
+      this.selectedFile() ?? undefined
+    ).subscribe({
       next: () => {
-        this.loading = false;
+        this.loading.set(false);
         this.modalService.showSuccess(
           '¡Cuenta creada!',
-          `Tu cuenta se registró correctamente. Ya podés iniciar sesión.`
+          'Tu cuenta se registró correctamente. Ahora podés iniciar sesión con tu correo o nombre de usuario.'
         );
         this.router.navigate(['/login']);
       },
       error: (err) => {
-        this.loading = false;
+        this.loading.set(false);
         const mensaje = err?.error?.message || 'No pudimos crear tu cuenta. Verificá los datos e intentá nuevamente.';
         this.modalService.showError('Error al registrarte', mensaje);
       }
@@ -116,7 +133,7 @@ export class RegisterComponent {
   loginWithProvider(provider: 'google' | 'facebook'): void {
     this.modalService.showInfo(
       'Función no disponible',
-      `El inicio de sesión con ${provider === 'google' ? 'Google' : 'Facebook'} todavía no está habilitado.`
+      `El inicio de sesión con ${provider === 'google' ? 'Google' : 'Facebook'} todavía no está habilitado en esta versión. Registrate con tu email por ahora.`
     );
   }
 }

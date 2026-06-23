@@ -1,12 +1,11 @@
 export interface User {
-  id: string;
+  _id: string;
+  nombre: string;
+  apellido: string;
+  correo: string;
   username: string;
-  email: string;
-  bio?: string;
-  avatarUrl?: string;
-  followersCount?: number;
-  followingCount?: number;
-  postsCount?: number;
-  createdAt?: string;
+  fechaNacimiento: string;
+  descripcion: string;
+  fotoUrl: string;
+  rol: 'usuario' | 'administrador';
 }
- 

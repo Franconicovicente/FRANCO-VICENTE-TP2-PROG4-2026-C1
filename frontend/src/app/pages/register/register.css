@@ -124,6 +124,99 @@
   color: var(--color-text-muted);
 }
 
+.field-row {
+  display: flex;
+  gap: 16px;
+}
+
+.field-row .field-group {
+  flex: 1;
+}
+
+.avatar-field {
+  margin-bottom: 24px;
+}
+
+.avatar-upload {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.avatar-preview {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.avatar-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  font-size: 22px;
+  opacity: 0.5;
+}
+
+.avatar-upload-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-upload {
+  display: inline-block;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.btn-upload:hover {
+  background: var(--color-border-soft);
+}
+
+.btn-remove {
+  background: none;
+  border: none;
+  color: var(--color-error);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.input-wrapper textarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 12px 0;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  font-family: inherit;
+  resize: vertical;
+}
+
+.input-wrapper textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+.input-wrapper input[type="date"] {
+  color: var(--color-text-primary);
+}
+
 .error-text {
   display: block;
   margin-top: 6px;
@@ -218,4 +311,3 @@
 .footer-text a:hover {
   text-decoration: underline;
 }
-

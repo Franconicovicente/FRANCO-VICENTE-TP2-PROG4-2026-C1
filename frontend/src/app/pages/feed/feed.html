@@ -4,10 +4,10 @@
   <div class="create-post-card">
     <div class="create-post-row">
       <div class="avatar-circle">
-        @if (authService.currentUser()?.avatarUrl) {
-          <img [src]="authService.currentUser()?.avatarUrl" alt="Tu avatar" />
+        @if (authService.currentUser()?.fotoUrl) {
+          <img [src]="authService.currentUser()?.fotoUrl" alt="Tu avatar" />
         } @else {
-          <span>{{ (authService.currentUser()?.username ?? 'A').charAt(0) }}</span>
+          <span>{{ (authService.currentUser()?.nombre ?? 'A').charAt(0) }}</span>
         }
       </div>
       <textarea

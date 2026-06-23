@@ -1,21 +1,36 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { AuthResponse, LoginDto } from '../models/auth.model';
+import { AuthResponse, LoginDto, RegisterDto } from '../models/auth.model';
 import { User } from '../models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/auth'; // Ajustar según tu back
+  private apiUrl = 'http://localhost:3000/auth'; // Ajustar puerto/ruta según tu back
 
   // Señal con el usuario actual (null = no logueado)
   currentUser = signal<User | null>(this.getStoredUser());
 
-  register(data: FormData): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, data).pipe(
-      tap((res) => this.setSession(res))
-    );
+  // El registro va como multipart/form-data porque el back acepta una foto opcional (Cloudinary)
+  register(data: RegisterDto, foto?: File): Observable<User> {
+    const formData = new FormData();
+    formData.append('nombre', data.nombre);
+    formData.append('apellido', data.apellido);
+    formData.append('correo', data.correo);
+    formData.append('username', data.username);
+    formData.append('password', data.password);
+    formData.append('fechaNacimiento', data.fechaNacimiento);
+    if (data.descripcion) {
+      formData.append('descripcion', data.descripcion);
+    }
+    if (foto) {
+      formData.append('foto', foto);
+    }
+
+    // El back de /register devuelve el User creado directamente, NO un AuthResponse con token.
+    // Esto significa que después de registrarse, el usuario tiene que hacer login para obtener su JWT.
+    return this.http.post<User>(`${this.apiUrl}/register`, formData);
   }
 
   login(data: LoginDto): Observable<AuthResponse> {

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { UserService } from '../../core/services/user.service';
 import { PostService } from '../../core/services/post.service';
 import { ModalService } from '../../core/services/modal.service';
@@ -20,6 +20,12 @@ export class ProfileComponent {
 
   profile = this.userService.getProfile();
   myPosts = this.postService.getMyPosts();
+
+  // Seguidores/seguidos no existen todavía en el back (no hay endpoint de follows),
+  // así que por ahora muestran 0. La cantidad de posts sí se puede calcular de myPosts().
+  postsCount = computed(() => this.myPosts().length);
+  followersCount = signal(0);
+  followingCount = signal(0);
 
   activeTab = signal<ProfileTab>('posts');
 

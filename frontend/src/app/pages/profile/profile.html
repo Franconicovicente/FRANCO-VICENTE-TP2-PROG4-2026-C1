@@ -5,10 +5,10 @@
 
     <div class="avatar-wrapper">
       <div class="profile-avatar">
-        @if (profile().avatarUrl) {
-          <img [src]="profile().avatarUrl" [alt]="profile().username" />
+        @if (profile().fotoUrl) {
+          <img [src]="profile().fotoUrl" [alt]="profile().username" />
         } @else {
-          <span>{{ profile().username.charAt(0) }}</span>
+          <span>{{ profile().nombre.charAt(0) }}</span>
         }
       </div>
       <button type="button" class="avatar-edit-btn" (click)="onChangeAvatar()" aria-label="Cambiar foto de perfil">
@@ -18,28 +18,30 @@
 
     <div class="profile-info">
       <div class="profile-title-row">
-        <h1>{{ profile().username }}</h1>
+        <h1>{{ profile().nombre }} {{ profile().apellido }}</h1>
         <button type="button" class="btn-edit-profile" (click)="onEditProfile()">Editar perfil</button>
         <button type="button" class="btn-settings" (click)="onSettings()" aria-label="Configuración">⚙️</button>
       </div>
 
+      <p class="profile-username">@{{ profile().username }}</p>
+
       <div class="profile-stats">
         <div class="stat">
-          <span class="stat-number">{{ profile().postsCount }}</span>
+          <span class="stat-number">{{ postsCount() }}</span>
           <span class="stat-label">Publicaciones</span>
         </div>
         <div class="stat">
-          <span class="stat-number">{{ profile().followersCount }}</span>
+          <span class="stat-number">{{ followersCount() }}</span>
           <span class="stat-label">Seguidores</span>
         </div>
         <div class="stat">
-          <span class="stat-number">{{ profile().followingCount }}</span>
+          <span class="stat-number">{{ followingCount() }}</span>
           <span class="stat-label">Seguidos</span>
         </div>
       </div>
 
-      @if (profile().bio) {
-        <p class="profile-bio">{{ profile().bio }}</p>
+      @if (profile().descripcion) {
+        <p class="profile-bio">{{ profile().descripcion }}</p>
       }
     </div>
 

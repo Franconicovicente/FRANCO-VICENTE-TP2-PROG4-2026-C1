@@ -2,14 +2,15 @@ import { Injectable, signal } from '@angular/core';
 import { User } from '../models/user.model';
 
 const MOCK_USER: User = {
-  id: 'u1',
-  username: 'Alex Rivera',
-  email: 'alex.rivera@example.com',
-  bio: 'Diseñador y entusiasta de la tecnología. Explorando la intersección entre la estética minimalista y la funcionalidad digital.',
-  avatarUrl: '',
-  followersCount: 1200,
-  followingCount: 850,
-  postsCount: 124,
+  _id: 'u1',
+  nombre: 'Alex',
+  apellido: 'Rivera',
+  correo: 'alex.rivera@example.com',
+  username: 'alex_rivera',
+  fechaNacimiento: '1995-04-12',
+  descripcion: 'Diseñador y entusiasta de la tecnología. Explorando la intersección entre la estética minimalista y la funcionalidad digital.',
+  fotoUrl: '',
+  rol: 'usuario',
 };
 
 @Injectable({ providedIn: 'root' })
