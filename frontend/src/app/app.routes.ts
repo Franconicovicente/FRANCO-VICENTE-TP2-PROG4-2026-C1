@@ -25,7 +25,7 @@ export const routes: Routes = [
         },
         {
             path: '',
-            redirectTo: 'feed',
+            redirectTo: 'register',
             pathMatch: 'full'
         }
         ]
