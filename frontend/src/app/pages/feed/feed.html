@@ -62,6 +62,7 @@
       <app-post-card
         [post]="post"
         [currentUserId]="authService.currentUser()?._id ?? null"
+        [currentUserRol]="authService.currentUser()?.rol ?? null"
         (likeToggled)="onLikeToggled($event)"
         (deleteRequested)="onDeleteRequested($event)"
       />
