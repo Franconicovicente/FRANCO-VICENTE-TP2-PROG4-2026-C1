@@ -74,6 +74,7 @@
             <app-post-card
               [post]="post"
               [currentUserId]="user._id"
+              [currentUserRol]="user.rol"
               (likeToggled)="onLikeToggled($event)"
               (deleteRequested)="onDeleteRequested($event)"
             />
