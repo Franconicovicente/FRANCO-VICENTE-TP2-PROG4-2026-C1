@@ -2,6 +2,15 @@
 
   <!-- Caja para crear nueva publicación -->
   <div class="create-post-card">
+
+    <input
+      type="text"
+      class="title-input"
+      placeholder="Título de tu publicación"
+      [value]="titulo()"
+      (input)="onTituloInput($event)"
+    />
+
     <div class="create-post-row">
       <div class="avatar-circle">
         @if (authService.currentUser()?.fotoUrl) {
@@ -13,29 +22,58 @@
       <textarea
         class="create-post-input"
         placeholder="¿Qué tienes en mente?"
-        [value]="newPostContent()"
-        (input)="onContentInput($event)"
+        [value]="descripcion()"
+        (input)="onDescripcionInput($event)"
         rows="1"
       ></textarea>
     </div>
 
+    @if (previewUrl()) {
+      <div class="image-preview-wrapper">
+        <img [src]="previewUrl()" alt="Vista previa de la imagen" class="image-preview" />
+        <button type="button" class="remove-image-btn" (click)="removeFile()">✕</button>
+      </div>
+    }
+
     <div class="create-post-actions">
-      <button type="button" class="attach-image-btn" (click)="onImageClick()">
+      <label for="post-image" class="attach-image-btn">
         <span class="attach-icon">🖼️</span> Imagen
-      </button>
-      <button type="button" class="publish-btn" (click)="onPublish()">
-        Publicar
+      </label>
+      <input id="post-image" type="file" accept="image/jpeg,image/png,image/webp" (change)="onFileSelected($event)" hidden />
+
+      <button type="button" class="publish-btn" [disabled]="publishing()" (click)="onPublish()">
+        {{ publishing() ? 'Publicando...' : 'Publicar' }}
       </button>
     </div>
   </div>
 
+  <!-- Selector de orden -->
+  <div class="sort-row">
+    <label for="sort-select">Ordenar por:</label>
+    <select id="sort-select" class="sort-select" (change)="onSortChange($event)">
+      <option value="fecha" [selected]="sortBy() === 'fecha'">Más recientes</option>
+      <option value="likes" [selected]="sortBy() === 'likes'">Más likes</option>
+    </select>
+  </div>
+
   <!-- Listado del feed -->
   <div class="posts-list">
-    @for (post of posts(); track post.id) {
-      <app-post-card [post]="post" (likeToggled)="onLikeToggled($event)" />
+    @for (post of postService.posts(); track post._id) {
+      <app-post-card
+        [post]="post"
+        [currentUserId]="authService.currentUser()?._id ?? null"
+        (likeToggled)="onLikeToggled($event)"
+        (deleteRequested)="onDeleteRequested($event)"
+      />
     } @empty {
       <p class="empty-state">Todavía no hay publicaciones. ¡Sé el primero en publicar algo!</p>
     }
   </div>
+
+  @if (postService.hasMore) {
+    <button type="button" class="load-more-btn" [disabled]="loadingMore()" (click)="onLoadMore()">
+      {{ loadingMore() ? 'Cargando...' : 'Cargar más' }}
+    </button>
+  }
 
 </div>

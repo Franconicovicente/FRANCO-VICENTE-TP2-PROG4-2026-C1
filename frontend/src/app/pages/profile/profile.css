@@ -98,6 +98,17 @@
 .profile-username {
   font-size: 14px;
   color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+
+.profile-email,
+.profile-birthdate {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+
+.profile-birthdate {
   margin-bottom: 16px;
 }
 

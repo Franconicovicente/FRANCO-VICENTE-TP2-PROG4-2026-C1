@@ -81,7 +81,7 @@ export class AuthService {
         username: usuario.username,       // nombre de usuario exigido
         rol: usuario.rol                  // rol exigido
       },
-      process.env.JWT_SECRET || 'claveSecretaSuperSecreta',
+      process.env.JWT_SECRET || 'nobu_secret_key_2026_progra_iv',
       { expiresIn: '15m' } // ⏱️ Vencimiento : 15 minutos
     );
 

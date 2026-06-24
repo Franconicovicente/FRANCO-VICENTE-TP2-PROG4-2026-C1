@@ -7,7 +7,7 @@ import { PostsModule } from './posts/schemas/posts.module';
 @Module({
   imports: [
   ConfigModule.forRoot({
-    envFilePath: '.env', // 👈 Le especificamos el archivo exacto
+    envFilePath: '.env',
     isGlobal: true,
   }),
   MongooseModule.forRootAsync({
