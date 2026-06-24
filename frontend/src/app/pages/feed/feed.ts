@@ -91,13 +91,16 @@ export class FeedComponent implements OnInit {
     this.publishing.set(true);
 
     this.postService.create(titulo, descripcion, this.selectedFile() ?? undefined).subscribe({
-      next: (nuevoPost) => {
+      next: () => {
         this.publishing.set(false);
-        this.postService.prependPost(nuevoPost);
         this.titulo.set('');
         this.descripcion.set('');
         this.removeFile();
         this.modalService.showSuccess('¡Publicado!', 'Tu publicación ya está visible en el feed.');
+        // El POST /posts del back devuelve el autor como un ID plano (sin populate),
+        // así que recargamos la primera página con un GET para tener el post con
+        // el autor completo (nombre, apellido, foto) y poder renderizar la card bien.
+        this.cargarFeed();
       },
       error: () => {
         this.publishing.set(false);
