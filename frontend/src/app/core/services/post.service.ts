@@ -72,12 +72,6 @@ export class PostService {
     return this.http.post<Post>(this.apiUrl, formData);
   }
 
-  // Inserta el post recién creado al tope de la lista en pantalla, sin tener que recargar todo
-  prependPost(post: Post): void {
-    this.posts.update((actuales) => [post, ...actuales]);
-    this.total.update((t) => t + 1);
-  }
-
   delete(postId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${postId}`).pipe(
       tap(() => {
