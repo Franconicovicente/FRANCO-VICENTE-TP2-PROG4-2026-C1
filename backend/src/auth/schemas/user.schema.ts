@@ -5,31 +5,31 @@ import { Document } from 'mongoose';
 @Schema({ timestamps: true })
 export class User extends Document {
   @Prop({ required: true, trim: true })
-  nombre: string;
+  nombre!: string;
 
   @Prop({ required: true, trim: true })
-  apellido: string;
+  apellido!: string;
 
   @Prop({ required: true, unique: true, lowercase: true, trim: true })
-  correo: string;
+  correo!: string;
 
   @Prop({ required: true, unique: true, lowercase: true, trim: true })
-  username: string; // Nombre de usuario (único en DB)
+  username!: string; // Nombre de usuario (único en DB)
 
   @Prop({ required: true })
-  password: string;
+  password!: string;
 
   @Prop({ required: true })
-  fechaNacimiento: string;
+  fechaNacimiento!: string;
 
   @Prop({ required: false, default: '' })
-  descripcion: string;
+  descripcion!: string;
 
   @Prop({ default: 'https://cdn-icons-png.flaticon.com/512/149/149071.png' })
-  fotoUrl: string; // Guardaremos la URL de la imagen aquí
+  fotoUrl!: string; // Guardaremos la URL de la imagen aquí
 
   @Prop({ required: true, default: 'usuario', enum: ['usuario', 'administrador'] })
-  rol: string; // Atributo perfil por defecto "usuario"
+  rol!: string; // Atributo perfil por defecto "usuario"
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

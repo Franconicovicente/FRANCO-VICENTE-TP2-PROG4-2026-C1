@@ -7,7 +7,7 @@ import { User } from '../models/user.model';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://franco-vicente-tp2-prog4-2026-c1.onrender.com/auth'; // Ajustar puerto/ruta según tu back
+  private apiUrl = 'https://franco-vicente-tp2-prog4-2026-c1.onrender.com/auth'; // Ajustar puerto/ruta segun el back
 
   // Señal con el usuario actual (null = no logueado)
   currentUser = signal<User | null>(this.getStoredUser());
@@ -28,8 +28,6 @@ export class AuthService {
       formData.append('foto', foto);
     }
 
-    // El back de /register devuelve el User creado directamente, NO un AuthResponse con token.
-    // Esto significa que después de registrarse, el usuario tiene que hacer login para obtener su JWT.
     return this.http.post<User>(`${this.apiUrl}/register`, formData);
   }
 
