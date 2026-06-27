@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/schemas/posts.module';
-
+import { CommentsModule } from './comments/comments.module';
 @Module({
   imports: [
   ConfigModule.forRoot({
@@ -24,7 +24,8 @@ import { PostsModule } from './posts/schemas/posts.module';
   inject: [ConfigService],
 }),
   AuthModule,
-  PostsModule
+  PostsModule,
+  CommentsModule
 ],
 })
 export class AppModule {}

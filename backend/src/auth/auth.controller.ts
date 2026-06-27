@@ -1,10 +1,13 @@
-import { Controller, Post, Body, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Post, Body, UseInterceptors, UploadedFile, UseGuards } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { CurrentUser } from './decorators/current-user.decorator';
+import type { JwtPayload } from './strategies/jwt.strategy';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 // 1. cloudinary con variables de entorno
 cloudinary.config({
@@ -40,5 +43,19 @@ export class AuthController {
   @Post('login')
   login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
+  }
+
+  @Post('autorizar')
+  @UseGuards (JwtAuthGuard)
+  autorizar(@CurrentUser () user: JwtPayload ) {
+    // Si llegamos hasta acá, el JwtAuthGuard ya validó la firma y la expiración del token.
+    // Si el token fuera inválido o estuviera vencido, el guard ya habría devuelto 401 antes de entrar aquí.
+    return this.authService.autorizar(user.uuid);
+  }
+ 
+  @Post('refrescar')
+  @UseGuards(JwtAuthGuard)
+  refrescar(@CurrentUser() user: JwtPayload) {
+    return this.authService.refrescar(user);
   }
 }
