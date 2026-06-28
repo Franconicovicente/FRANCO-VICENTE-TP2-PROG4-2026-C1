@@ -97,4 +97,38 @@ export class AuthService {
       token: token
     }
   }
+
+    // Valida que el usuario del token todavía exista en la base, y devuelve sus datos completos
+  // (sin password). El JwtAuthGuard ya se encargó de validar la firma/expiración antes de llegar acá.
+  async autorizar(userId: string): Promise<any> {
+    const usuario = await this.userModel.findById(userId);
+ 
+    if (!usuario) {
+      throw new UnauthorizedException('El usuario del token ya no existe');
+    }
+ 
+    const usuarioJson = usuario.toObject();
+    const { password: _, ...usuarioSinPassword } = usuarioJson;
+ 
+    return usuarioSinPassword;
+  }
+ 
+  // Genera un token NUEVO con la misma payload que tenía el token actual, reiniciando
+  // el vencimiento a 15 minutos. El JwtAuthGuard ya validó que el token viejo sea válido
+  // antes de llegar a este método (si hubiera estado vencido, nunca habríamos llegado aquí).
+  async refrescar(payload: { uuid: string; correo: string; username: string; rol: string }): Promise<any> {
+    const nuevoToken = jwt.sign(
+      {
+        uuid: payload.uuid,
+        correo: payload.correo,
+        username: payload.username,
+        rol: payload.rol,
+      },
+      process.env.JWT_SECRET || 'claveSecretaSuperSecreta',
+      { expiresIn: '15m' }
+    );
+ 
+    return { token: nuevoToken };
+  }
+
 }

@@ -3,6 +3,11 @@ import { authGuard } from './core/guards/auth-guard';
 
 export const routes: Routes = [
   {
+    // Pantalla de carga inicial: valida el token contra el back antes de decidir a dónde ir
+    path: '',
+    loadComponent: () => import('./pages/splash/splash').then((m) => m.SplashComponent)
+  },
+  {
     path: 'register',
     loadComponent: () => import('./pages/register/register').then((m) => m.RegisterComponent)
   },
@@ -23,18 +28,11 @@ export const routes: Routes = [
       {
         path: 'profile',
         loadComponent: () => import('./pages/profile/profile').then((m) => m.ProfileComponent)
-      },
-      {
-        // Si entrás a '/' estando logueado, te manda directo al feed
-        path: '',
-        redirectTo: 'feed',
-        pathMatch: 'full'
       }
     ]
   },
   {
-    // Cualquier ruta no reconocida (incluyendo '/' sin sesión, porque el guard rechaza
-    // el bloque de arriba y cae acá) termina en login
+    // Cualquier ruta no reconocida termina en login
     path: '**',
     redirectTo: 'login'
   },

@@ -7,7 +7,7 @@ import { User } from '../models/user.model';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://franco-vicente-tp2-prog4-2026-c1.onrender.com/auth'; // Ajustar puerto/ruta segun el back
+  private apiUrl = 'https://franco-vicente-tp2-prog4-2026-c1.onrender.com/auth';
 
   // Señal con el usuario actual (null = no logueado)
   currentUser = signal<User | null>(this.getStoredUser());
@@ -28,6 +28,8 @@ export class AuthService {
       formData.append('foto', foto);
     }
 
+    // El back de /register devuelve el User creado directamente, NO un AuthResponse con token.
+    // Esto significa que después de registrarse, el usuario tiene que hacer login para obtener su JWT.
     return this.http.post<User>(`${this.apiUrl}/register`, formData);
   }
 
@@ -37,9 +39,32 @@ export class AuthService {
     );
   }
 
+  // Valida el token actual contra el back. Si es válido, devuelve los datos completos
+  // del usuario (y los actualiza en localStorage/signal). Si no, el back responde 401
+  // y quien llame a este método se entera por el error del Observable.
+  autorizar(): Observable<User> {
+    return this.http.post<User>(`${this.apiUrl}/autorizar`, {}).pipe(
+      tap((user) => {
+        localStorage.setItem('user', JSON.stringify(user));
+        this.currentUser.set(user);
+      })
+    );
+  }
+
+  // Pide un token nuevo con la misma payload (mismo usuario), reiniciando el vencimiento a 15 min.
+  refrescar(): Observable<{ token: string }> {
+    return this.http.post<{ token: string }>(`${this.apiUrl}/refrescar`, {}).pipe(
+      tap((res) => {
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('loginTimestamp', Date.now().toString());
+      })
+    );
+  }
+
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('loginTimestamp');
     this.currentUser.set(null);
   }
 
@@ -51,9 +76,16 @@ export class AuthService {
     return !!this.getToken();
   }
 
+  // Momento (timestamp en ms) en que se inició la sesión actual, usado por el contador de sesión
+  getLoginTimestamp(): number | null {
+    const raw = localStorage.getItem('loginTimestamp');
+    return raw ? Number(raw) : null;
+  }
+
   private setSession(res: AuthResponse): void {
     localStorage.setItem('token', res.token);
     localStorage.setItem('user', JSON.stringify(res.user));
+    localStorage.setItem('loginTimestamp', Date.now().toString());
     this.currentUser.set(res.user);
   }
 
