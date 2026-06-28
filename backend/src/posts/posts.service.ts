@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Post } from '../posts/schemas/post.schema';
+import { Post } from './schemas/post.schema';
 import { CreatePostDto } from './dto/create-post.dto';
 import { QueryPostsDto } from './dto/query-posts.dto';
 
@@ -52,6 +52,18 @@ export class PostsService {
     }
 
     return { posts: resultado, total };
+  }
+
+  async findOne(postId: string): Promise<any> {
+    const post = await this.postModel
+      .findOne({ _id: postId, eliminado: false })
+      .populate('autor', 'nombre apellido username fotoUrl');
+
+    if (!post) {
+      throw new NotFoundException('La publicación no existe');
+    }
+
+    return this.toResponseShape(post);
   }
 
   async remove(postId: string, userId: string, userRol: string): Promise<void> {

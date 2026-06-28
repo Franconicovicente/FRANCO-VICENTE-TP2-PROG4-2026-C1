@@ -1,9 +1,11 @@
 import { Component, input, output, computed } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Post } from '../../../../core/models/post.model';
 
 @Component({
   selector: 'app-post-card',
   standalone: true,
+  imports: [RouterLink],
   templateUrl: './post-card.html',
   styleUrls: ['./post-card.css']
 })
