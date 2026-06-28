@@ -57,7 +57,9 @@ export class LoginComponent {
     this.authService.login({ loginField: loginField!, password: password! }).subscribe({
       next: () => {
         this.loading.set(false);
-        this.router.navigate(['/feed']);
+        // Navega a la raíz, que carga el Splash: ahí se valida el token recién obtenido
+        // contra /auth/autorizar y, si todo está bien, te manda a /feed automáticamente.
+        this.router.navigate(['/']);
       },
       error: (err) => {
         this.loading.set(false);
