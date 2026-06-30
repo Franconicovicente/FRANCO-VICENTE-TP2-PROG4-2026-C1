@@ -28,6 +28,10 @@ export const routes: Routes = [
       {
         path: 'profile',
         loadComponent: () => import('./pages/profile/profile').then((m) => m.ProfileComponent)
+      },
+      {
+        path: 'posts/:id',
+        loadComponent: () => import('./pages/post-detail/post-detail').then((m) => m.PostDetailComponent)
       }
     ]
   },

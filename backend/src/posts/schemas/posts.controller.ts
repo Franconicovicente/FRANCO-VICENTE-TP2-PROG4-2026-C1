@@ -13,7 +13,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
-import { PostsService } from './../posts.service';
+import { PostsService } from '../posts.service';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { QueryPostsDto } from '../dto/query-posts.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
@@ -50,6 +50,11 @@ export class PostsController {
   @Get()
   findAll(@Query() query: QueryPostsDto) {
     return this.postsService.findAll(query);
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.postsService.findOne(id);
   }
 
   @Delete(':id')

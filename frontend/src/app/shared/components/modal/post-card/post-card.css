@@ -137,6 +137,10 @@
   color: var(--color-error);
 }
 
+.comments-link {
+  text-decoration: none;
+}
+
 .action-btn:hover {
   opacity: 0.7;
 }

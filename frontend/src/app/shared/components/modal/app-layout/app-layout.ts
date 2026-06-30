@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet, Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
+import { SessionService } from '../../../../core/services/session';
 import { ThemeToggleComponent } from '../theme-toggle/theme-toggle';
 
 @Component({
@@ -12,9 +13,11 @@ import { ThemeToggleComponent } from '../theme-toggle/theme-toggle';
 })
 export class AppLayoutComponent {
   authService = inject(AuthService);
+  private sessionService = inject(SessionService);
   private router = inject(Router);
 
   onLogout(): void {
+    this.sessionService.clear();
     this.authService.logout();
     this.router.navigate(['/login']);
   }

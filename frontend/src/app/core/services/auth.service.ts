@@ -1,13 +1,14 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { AuthResponse, LoginDto, RegisterDto } from '../models/auth.model';
 import { User } from '../models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://franco-vicente-tp2-prog4-2026-c1.onrender.com/auth';
+  private apiUrl = `${environment.apiUrl}/auth`;
 
   // Señal con el usuario actual (null = no logueado)
   currentUser = signal<User | null>(this.getStoredUser());

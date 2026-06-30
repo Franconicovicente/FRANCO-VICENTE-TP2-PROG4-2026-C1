@@ -36,6 +36,10 @@
       <span>{{ post().likedByMe ? '❤️' : '🤍' }}</span>
       <span>{{ post().likesCount }}</span>
     </button>
+    <a [routerLink]="['/posts', post()._id]" class="action-btn comments-link">
+      <span>💬</span>
+      <span>Ver comentarios</span>
+    </a>
   </footer>
 
 </article>

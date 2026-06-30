@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin, timer, catchError, of } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
+import { SessionService } from '../../core/services/session';
 
 const TIEMPO_MINIMO_MS = 3000;
 
@@ -14,6 +15,7 @@ const TIEMPO_MINIMO_MS = 3000;
 export class SplashComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private sessionService = inject(SessionService)
 
   ngOnInit(): void {
     this.validarSesion();
@@ -38,6 +40,7 @@ export class SplashComponent implements OnInit {
     ]).subscribe(([usuario]) => {
       if (usuario) {
         this.router.navigate(['/feed']);
+        this.sessionService.start();
       } else {
         this.authService.logout();
         this.router.navigate(['/login']);

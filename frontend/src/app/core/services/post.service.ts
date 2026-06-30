@@ -1,12 +1,13 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { Post, PostsResponse, PostSortBy } from '../models/post.model';
 
 @Injectable({ providedIn: 'root' })
 export class PostService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://franco-vicente-tp2-prog4-2026-c1.onrender.com/posts';
+  private apiUrl = `${environment.apiUrl}/posts`;
 
   // Estado del feed: posts cargados hasta el momento + total que existen en el back
   posts = signal<Post[]>([]);

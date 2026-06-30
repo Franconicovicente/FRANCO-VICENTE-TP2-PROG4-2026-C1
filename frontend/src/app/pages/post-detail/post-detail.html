@@ -1,0 +1,122 @@
+<div class="post-detail-page">
+
+  <a [routerLink]="['/feed']" class="back-link">← Volver al feed</a>
+
+  @if (loadingPost()) {
+    <p class="empty-state">Cargando publicación...</p>
+  } @else if (post(); as p) {
+
+    <!-- Publicación grande -->
+    <article class="post-detail-card">
+      <header class="post-header">
+        <div class="post-author">
+          <div class="avatar-circle">
+            @if (p.autor.fotoUrl) {
+              <img [src]="p.autor.fotoUrl" [alt]="p.autor.nombre" />
+            } @else {
+              <span>{{ p.autor.nombre.charAt(0) }}</span>
+            }
+          </div>
+          <div class="author-info">
+            <span class="author-name">{{ p.autor.nombre }} {{ p.autor.apellido }}</span>
+            <span class="post-date">{{ fechaFormateada(p.createdAt) }}</span>
+          </div>
+        </div>
+      </header>
+
+      <h1 class="post-title">{{ p.titulo }}</h1>
+      <p class="post-content">{{ p.descripcion }}</p>
+
+      @if (p.imagenUrl) {
+        <div class="post-image-wrapper">
+          <img [src]="p.imagenUrl" [alt]="p.titulo" class="post-image" />
+        </div>
+      }
+
+      <footer class="post-actions">
+        <button type="button" class="action-btn" [class.liked]="p.likedByMe" (click)="onLikeToggled()">
+          <span>{{ p.likedByMe ? '❤️' : '🤍' }}</span>
+          <span>{{ p.likesCount }}</span>
+        </button>
+      </footer>
+    </article>
+
+    <!-- Caja para escribir un comentario nuevo -->
+    <div class="new-comment-card">
+      <textarea
+        class="new-comment-input"
+        placeholder="Escribí un comentario..."
+        [value]="nuevoComentario()"
+        (input)="onComentarioInput($event)"
+        rows="2"
+      ></textarea>
+      <button
+        type="button"
+        class="publish-comment-btn"
+        [disabled]="publicandoComentario()"
+        (click)="onPublicarComentario()"
+      >
+        {{ publicandoComentario() ? 'Publicando...' : 'Comentar' }}
+      </button>
+    </div>
+
+    <!-- Listado de comentarios -->
+    <div class="comments-list">
+      <h2 class="comments-title">Comentarios ({{ commentService.total() }})</h2>
+
+      @for (comentario of commentService.comentarios(); track comentario._id) {
+        <div class="comment-item">
+          <div class="avatar-circle small">
+            @if (comentario.autor.fotoUrl) {
+              <img [src]="comentario.autor.fotoUrl" [alt]="comentario.autor.nombre" />
+            } @else {
+              <span>{{ comentario.autor.nombre.charAt(0) }}</span>
+            }
+          </div>
+
+          <div class="comment-body">
+            <div class="comment-header">
+              <span class="comment-author">{{ comentario.autor.nombre }} {{ comentario.autor.apellido }}</span>
+              <span class="comment-date">{{ fechaFormateada(comentario.createdAt) }}</span>
+              @if (comentario.modificado) {
+                <span class="comment-edited">(editado)</span>
+              }
+            </div>
+
+            @if (editandoId() === comentario._id) {
+              <textarea
+                class="edit-comment-input"
+                [value]="textoEdicion()"
+                (input)="onTextoEdicionInput($event)"
+                rows="2"
+              ></textarea>
+              <div class="edit-actions">
+                <button type="button" class="cancel-edit-btn" (click)="onCancelEdit()">Cancelar</button>
+                <button type="button" class="save-edit-btn" (click)="onGuardarEdicion(comentario._id)">Guardar</button>
+              </div>
+            } @else {
+              <p class="comment-message">{{ comentario.mensaje }}</p>
+              @if (esMiComentario(comentario.autor._id)) {
+                <button type="button" class="edit-link" (click)="onStartEdit(comentario._id, comentario.mensaje)">
+                  Editar
+                </button>
+              }
+            }
+          </div>
+        </div>
+      } @empty {
+        <p class="empty-state">Todavía no hay comentarios. ¡Sé el primero en comentar!</p>
+      }
+
+      @if (commentService.hasMore) {
+        <button type="button" class="load-more-btn" [disabled]="loadingMore()" (click)="onLoadMoreComments()">
+          {{ loadingMore() ? 'Cargando...' : 'Cargar más' }}
+        </button>
+      }
+    </div>
+
+  } @else {
+    <p class="empty-state">No pudimos cargar esta publicación.</p>
+  }
+
+</div>
