@@ -65,6 +65,11 @@ export class AuthService {
     if (!usuario) {
       throw new UnauthorizedException('Credenciales incorrectas');
     }
+
+    // si el usuario fue deshabilitado, (sprint 4)
+    if (usuario.eliminado) {
+      throw new UnauthorizedException('Tu cuenta fue deshabilitada. Contactate con un administrador.');
+    }
     // Devolver todos los datos del usuario 
     // Ocultamos la contraseña 
     // conversion documento de Mongoose a un objeto JS común
