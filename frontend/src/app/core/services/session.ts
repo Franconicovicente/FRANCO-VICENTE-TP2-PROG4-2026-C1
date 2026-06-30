@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { ModalService } from './modal.service';
 
-const MINUTO_MS = 60 * 1000;
-const TIEMPO_AVISO_MS = 10 * MINUTO_MS; // a los 10 min de sesión (quedan 5 de los 15 totales)
+// const MINUTO_MS = 60 * 1000;
+const TIEMPO_AVISO_MS = 10 * 1000; // a los 10 min de sesión (quedan 5 de los 15 totales)
 
 @Injectable({ providedIn: 'root' })
 export class SessionService {
@@ -16,6 +16,7 @@ export class SessionService {
 
   // Se llama una vez, apenas el usuario inicia sesión (login exitoso o sesión restaurada en el splash)
   start(): void {
+    console.log('SessionService.start() llamado, timestamp:', this.authService.getLoginTimestamp());
     this.clear();
 
     const loginTimestamp = this.authService.getLoginTimestamp();
@@ -44,6 +45,8 @@ export class SessionService {
   }
 
   private mostrarModalDeExtension(): void {
+      console.log('¡Modal de sesión disparado!');
+
     this.modalService.showConfirm(
       'Tu sesión está por vencer',
       'Tu sesión vence en unos minutos. ¿Querés extenderla para seguir navegando sin interrupciones?',
