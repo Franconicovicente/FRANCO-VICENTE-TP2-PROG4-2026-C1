@@ -31,6 +31,10 @@ export class AdminUsersComponent implements OnInit {
 
   // Signals para manejar el estado
   usuarios = signal<User[]>([]);
+
+  //signals modal
+  errorMessage = signal<string | null>(null);
+  showSuccessModal = signal<boolean>(false);
   
   // Guardamos los datos del nuevo usuario en una Signal de objeto para el Form
   nuevoUsuario = signal({
@@ -73,10 +77,10 @@ export class AdminUsersComponent implements OnInit {
 }
 
   crearUsuario() {
-    // Validación básica antes de mandar a NestJS
+    this.errorMessage.set(null); 
     const fields = this.nuevoUsuario();
     if (!fields.nombre || !fields.correo || !fields.username || !fields.password) {
-      alert('Por favor completa los campos obligatorios del feed.');
+      this.errorMessage.set('Por favor completa los campos obligatorios del feed.');
       return;
     }
 
@@ -85,6 +89,8 @@ export class AdminUsersComponent implements OnInit {
         // Añadimos el usuario nuevo a la lista reactiva
         this.usuarios.update(lista => [usuarioCreado, ...lista]);
         
+        this.showSuccessModal.set(true);
+
         // Reset del formulario estilo caja limpia
         this.nuevoUsuario.set({
           nombre: '',

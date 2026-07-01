@@ -163,4 +163,15 @@
     }
   </div>
 
+  @if (showSuccessModal()) {
+  <div class="modal-overlay" (click)="cerrarModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-icon">🎉</div>
+      <h3>¡Usuario Creado!</h3>
+      <p>El perfil fue guardado con éxito en la base de datos de la red social.</p>
+      <button class="modal-close-btn" (click)="cerrarModal()">Listo, genial</button>
+    </div>
+  </div>
+}
+
 </div>
