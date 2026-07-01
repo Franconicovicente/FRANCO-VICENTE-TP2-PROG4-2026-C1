@@ -1,0 +1,46 @@
+<div class="stats-container">
+  <div class="stats-header">
+    <h2>Panel de Estadísticas</h2>
+    
+    <div class="filter-buttons">
+      <button 
+        type="button" 
+        [class.active]="rangoDias() === 7" 
+        (click)="cambiarRango(7)">
+        Últimos 7 días
+      </button>
+      <button 
+        type="button" 
+        [class.active]="rangoDias() === null" 
+        (click)="cambiarRango(null)">
+        Todo el historial
+      </button>
+    </div>
+  </div>
+
+  <div class="stats-container">
+  <div class="stats-header">
+    <h2>Panel de Estadísticas Reales</h2>
+    
+    <div class="filter-buttons">
+      <button type="button" [class.active]="rangoDias() === 7" (click)="cambiarRango(7)">Últimos 7 días</button>
+      <button type="button" [class.active]="rangoDias() === null" (click)="cambiarRango(null)">Todo el historial</button>
+    </div>
+  </div>
+
+  @if (cargado()) {
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>Evolución de Comentarios por Fecha</h3>
+        <canvas #canvasLineas></canvas>
+      </div>
+
+      <div class="chart-card">
+        <h3>Aporte de Posts por Usuario</h3>
+        <canvas #canvasTorta></canvas>
+      </div>
+    </div>
+  } @else {
+    <div class="loading-state">Conectando con la base de datos de Mongo...</div>
+  }
+</div>

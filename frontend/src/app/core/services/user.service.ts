@@ -11,6 +11,7 @@ const MOCK_USER: User = {
   descripcion: 'Diseñador y entusiasta de la tecnología. Explorando la intersección entre la estética minimalista y la funcionalidad digital.',
   fotoUrl: '',
   rol: 'usuario',
+  eliminado: false,
 };
 
 @Injectable({ providedIn: 'root' })

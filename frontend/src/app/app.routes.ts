@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth-guard';
+import { adminGuard } from './core/guards/admin-guard';
 
 export const routes: Routes = [
   {
@@ -32,7 +33,21 @@ export const routes: Routes = [
       {
         path: 'posts/:id',
         loadComponent: () => import('./pages/post-detail/post-detail').then((m) => m.PostDetailComponent)
-      }
+      },
+      {
+        path: 'admin',
+        canActivate: [adminGuard], // Bloquea acceso por URL a no-admins
+        children: [
+          {
+            path: 'users',
+            loadComponent: () => import('./pages/admin/admin-users/admin-users').then(m => m.AdminUsersComponent)
+          },
+          {
+            path: 'stats',
+            loadComponent: () => import('./pages/admin/admin-stats/admin-stats').then(m => m.AdminStatsComponent)
+          }
+        ]
+      },
     ]
   },
   {

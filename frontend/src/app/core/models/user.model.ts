@@ -8,4 +8,5 @@ export interface User {
   descripcion: string;
   fotoUrl: string;
   rol: 'usuario' | 'administrador';
+  eliminado : boolean;
 }
