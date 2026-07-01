@@ -108,6 +108,6 @@ export class AdminUsersComponent implements OnInit {
   }
 
   cerrarModal() {
-    this.modalExito()?.nativeElement.close();
+    this.showSuccessModal.set(false);
   }
 }
