@@ -24,8 +24,6 @@ export class SplashComponent implements OnInit {
   private validarSesion(): void {
     const esperaMinima = timer(TIEMPO_MINIMO_MS);
 
-    // Sin token guardado, ni vale la pena consultar al back: directo a login,
-    // pero igual esperamos el tiempo mínimo para que el splash se vea.
     if (!this.authService.getToken()) {
       esperaMinima.subscribe(() => this.router.navigate(['/login']));
       return;
@@ -33,7 +31,6 @@ export class SplashComponent implements OnInit {
 
     // Combinamos la validación real contra el back con el tiempo mínimo de espera.
     // forkJoin espera a que AMBOS terminen antes de continuar, así nunca se ve
-    // el splash menos de 700ms, sin importar qué tan rápido responda el servidor.
     forkJoin([
       this.authService.autorizar().pipe(catchError(() => of(null))),
       esperaMinima

@@ -1,0 +1,166 @@
+<div class="feed-page">
+
+  <form class="create-post-card" (ngSubmit)="$event.preventDefault()">
+  <!-- Fila superior estilo Feed: Título/Nombre -->
+  <div class="create-post-row header-row">
+    <div class="avatar-circle">
+      <span>👤</span>
+    </div>
+    <div class="form-inputs-grid main-fields">
+      <input
+        type="text"
+        class="title-input"
+        placeholder="Nombre completo"
+        [(ngModel)]="nuevoUsuario().nombre"
+        name="nombre"
+        required
+      />
+      <input
+        type="text"
+        class="title-input"
+        placeholder="Apellido"
+        [(ngModel)]="nuevoUsuario().apellido"
+        name="apellido"
+        required
+      />
+    </div>
+  </div>
+
+  <!-- Cuerpo del formulario en dos columnas bien distribuidas -->
+  <div class="form-body-container">
+    <div class="form-grid-two-columns">
+      <div class="form-group">
+        <label class="field-label">Nombre de usuario</label>
+        <input 
+          type="text" 
+          class="inline-field" 
+          placeholder="@username" 
+          [(ngModel)]="nuevoUsuario().username" 
+          name="username" 
+          required 
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="field-label">Correo electrónico</label>
+        <input 
+          type="email" 
+          class="inline-field" 
+          placeholder="ejemplo@correo.com" 
+          [(ngModel)]="nuevoUsuario().correo" 
+          name="correo" 
+          required 
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="field-label">Contraseña</label>
+        <input 
+          type="password" 
+          class="inline-field" 
+          placeholder="••••••••" 
+          [(ngModel)]="nuevoUsuario().password" 
+          name="password" 
+          required 
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="field-label">Fecha de Nacimiento</label>
+        <input 
+          type="date" 
+          class="inline-field date-field" 
+          [(ngModel)]="nuevoUsuario().fechaNacimiento" 
+          name="fechaNacimiento" 
+          required 
+        />
+      </div>
+    </div>
+
+    <!-- Descripción ocupa el ancho completo abajo -->
+    <div class="form-group full-width">
+      <label class="field-label">Biografía / Descripción</label>
+      <textarea
+        class="create-post-input"
+        placeholder="Escribe una breve descripción del usuario..."
+        [(ngModel)]="nuevoUsuario().descripcion"
+        name="descripcion"
+        rows="2"
+      ></textarea>
+    </div>
+  </div>
+
+  <!-- Acciones inferiores (Roles y Botón) -->
+  <div class="create-post-actions">
+    <div class="role-selection-feed">
+      <label class="attach-image-btn" [class.selected]="nuevoUsuario().rol === 'usuario'">
+        <input type="radio" value="usuario" [(ngModel)]="nuevoUsuario().rol" name="rol" hidden />
+        <span>👤 Regular</span>
+      </label>
+      <label class="attach-image-btn" [class.selected]="nuevoUsuario().rol === 'administrador'">
+        <input type="radio" value="administrador" [(ngModel)]="nuevoUsuario().rol" name="rol" hidden />
+        <span>⚡ Admin</span>
+      </label>
+    </div>
+
+    <button type="button" class="publish-btn" (click)="crearUsuario()">
+      Registrar Usuario
+    </button>
+  </div>
+</form>
+
+  <div class="sort-row">
+    <label>Usuarios Registrados en el Sistema ({{ usuarios().length }})</label>
+  </div>
+
+  <div class="posts-list">
+    @for (user of usuarios(); track user._id) {
+      <div class="user-feed-card">
+        <div class="user-card-header">
+          <div class="avatar-circle">
+            @if (user.fotoUrl) {
+              <img [src]="user.fotoUrl" alt="Avatar" />
+            } @else {
+              <span>{{ user.nombre.charAt(0).toUpperCase() }}</span>
+            }
+          </div>
+          
+          <div class="user-card-meta">
+            <h4 class="user-fullname">
+              {{ user.nombre }} {{ user.apellido }}
+              <span class="user-badge" [class.admin-badge]="user.rol === 'administrador'">
+                {{ user.rol | roleName }}
+              </span>
+            </h4>
+            <span class="user-username">&#64;{{ user.username }}</span>
+          </div>
+
+          <div class="user-card-status">
+            <span [appStatusColor]="user.eliminado">{{ user.eliminado | statusText }}</span>
+          </div>
+        </div>
+
+        <div class="user-card-body">
+          <p class="user-description">{{ user.descripcion || 'Sin descripción disponible.' }}</p>
+          <div class="user-details-footer">
+            <span>📧 {{ user.correo }}</span>
+            <span>📅 Nacimiento: {{ user.fechaNacimiento | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+
+        <div class="user-card-actions">
+          <button 
+            type="button" 
+            [class]="user.eliminado ? 'action-btn-enable' : 'action-btn-disable'"
+            appDebounceClick 
+            (debounceClick)="toggleEstatus(user)">
+            {{ user.eliminado ? '🟢 Volver a dar de Alta' : '🔴 Deshabilitar Acceso' }}
+          </button>
+        </div>
+      </div>
+    } @empty {
+      <p class="empty-state">No se encontraron usuarios cargados en MongoDB.</p>
+    }
+  </div>
+
+</div>

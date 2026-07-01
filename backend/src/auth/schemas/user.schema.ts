@@ -30,6 +30,10 @@ export class User extends Document {
 
   @Prop({ required: true, default: 'usuario', enum: ['usuario', 'administrador'] })
   rol!: string; // Atributo perfil por defecto "usuario"
+
+  // Soft delete: usuario deshabilitado no puede iniciar sesión, pero sus datos se conservan
+  @Prop({ default: false })
+  eliminado!: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

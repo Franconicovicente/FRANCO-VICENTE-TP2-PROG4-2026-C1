@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -12,6 +12,8 @@ export class AuthService {
 
   // Señal con el usuario actual (null = no logueado)
   currentUser = signal<User | null>(this.getStoredUser());
+
+  isAdmin = computed(() => this.currentUser()?.rol === 'administrador');
 
   // El registro va como multipart/form-data porque el back acepta una foto opcional (Cloudinary)
   register(data: RegisterDto, foto?: File): Observable<User> {
