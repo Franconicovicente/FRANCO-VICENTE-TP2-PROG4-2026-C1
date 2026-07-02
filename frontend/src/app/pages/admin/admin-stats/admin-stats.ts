@@ -109,7 +109,7 @@ export class AdminStatsComponent implements OnInit {
     if (!ctx) return;
     if (this.chartLineasInstance) this.chartLineasInstance.destroy();
 
-    // MAPEADO CORRECTO SEGÚN TU CONSOLA: (.fecha y .cantidad)
+    
     const fechas = data.map(item => item.fecha || 'Fecha');
     const cantidadComentarios = data.map(item => item.cantidad || 0);
 

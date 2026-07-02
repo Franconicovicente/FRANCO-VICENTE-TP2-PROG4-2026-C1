@@ -6,12 +6,12 @@ export const adminGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // Usamos la señal computada que agregamos antes
+  
   if (authService.isAdmin()) {
-    return true; // Sos admin, pasá sampa
+    return true; 
   }
 
-  // Si no es admin, lo pateamos al feed (o a donde prefieras)
+  // Si no es admin
   router.navigate(['/feed']);
   return false;
 };
